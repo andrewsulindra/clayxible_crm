@@ -31,5 +31,25 @@ class DefaultSeeder extends Seeder
         ]);
 
         $user->assignRole('Super Admin');
+
+        // fake
+        $user = User::firstOrCreate([
+        	'name' => 'Sales1',
+        	'email' => 'sales1@noemail.com',
+        	'password' => Hash::make('sales'),
+            'image' => generateUserImage('BSales1'),
+        	'is_active' => 1
+        ]);
+
+        $user->assignRole('Sales');
+        $user = User::firstOrCreate([
+        	'name' => 'Sales2',
+        	'email' => 'sales2@noemail.com',
+        	'password' => Hash::make('sales'),
+            'image' => generateUserImage('CSales2'),
+        	'is_active' => 1
+        ]);
+
+        $user->assignRole('Sales');
     }
 }

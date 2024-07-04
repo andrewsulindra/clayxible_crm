@@ -20,6 +20,7 @@
                 <option value="all" selected>Show all</option>
                 <option value="open">Open</option>
                 <option value="confirm">Confirm</option>
+                <option value="follow_up">Follow Up</option>
                 <option value="need_follow_up">Need Follow Up</option>
                 <option value="close_paid">Close Paid</option>
                 <option value="close_unpaid">Close Unpaid</option>

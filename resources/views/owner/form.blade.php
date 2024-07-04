@@ -26,6 +26,16 @@
 			  @endif
                 <div class="card-body">
                   <div class="form-group">
+                    <label>Owner Category</label>
+                    <select class="form-control" style="width: 100%;" id="owner_category_id" name="owner_category_id" required>
+                      @if (!empty($owner_category))
+                      @foreach ($owner_category as $oc)
+                        <option value="{{ $oc->id }}" {{ isset($models) && $models->owner_category_id == $oc->id ? 'selected' : '' }}>{{ $oc->name }}</option>
+                      @endforeach
+                      @endif
+                    </select>
+                  </div>
+                  <div class="form-group">
                     <label>Name</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" value="{{ $models->name ?? old('name') }}" required autocomplete="name">
                   </div>

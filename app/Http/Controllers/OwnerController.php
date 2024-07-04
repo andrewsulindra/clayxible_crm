@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Owner;
+use App\Models\OwnerCategory;
 use Illuminate\Support\Facades\Validator;
 use DB;
 
@@ -29,8 +30,7 @@ class OwnerController extends Controller
             'menu' => 'master',
             'sub_menu' => 'owner',
             'inc' => '1',
-            'models' => Owner::orderBy('is_active', 'desc')
-            ->get()
+            'models' => Owner::getOwnerList()
         ];
         return view('owner.index', $data);
     }
@@ -55,11 +55,14 @@ class OwnerController extends Controller
         ->where('cities.country_code','ID')
         ->get();
 
+        $owner_category = OwnerCategory::where('is_active', '1')->get();
+
         $data = [
             'title' => 'Create Owner',
             'menu' => 'master',
             'sub_menu' => 'owner',
             'cities' => $cities,
+            'owner_category' => $owner_category
         ];
         return view('owner.form', $data);
     }
@@ -109,12 +112,18 @@ class OwnerController extends Controller
         ->where('cities.country_code','ID')
         ->get();
 
+        $owner = Owner::findOrFail($id);
+        Owner::checkOwnerBelongsToUser($owner->created_by);
+
+        $owner_category = OwnerCategory::where('is_active', '1')->get();
+
         $data = [
             'title' => 'Edit Owner',
             'menu' => 'master',
             'sub_menu' => 'owner',
-            'models' => Owner::findOrFail($id),
+            'models' => $owner,
             'cities' => $cities,
+            'owner_category' => $owner_category
         ];
         return view('owner.form', $data);
     }

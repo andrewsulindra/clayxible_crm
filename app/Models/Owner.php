@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Laravel\Passport\HasApiTokens;
 use DB;
+use Auth;
 
 class Owner extends BaseModel
 {
@@ -64,6 +65,27 @@ class Owner extends BaseModel
             return null;
         } else {
             return $cities->name;
+        }
+    }
+
+    public static function getOwnerList()
+    {
+        $query = self::where('is_active', '1')->orderBy('name', 'asc');
+
+        if (Auth::user()->hasAnyRole('Sales')) {
+            $query = self::where('created_by', Auth::user()->id)
+                         ->where('is_active', '1')
+                         ->orderBy('name', 'asc');
+        }
+
+        return $query->get();
+    }
+
+    public static function checkOwnerBelongsToUser($user_id) {
+        if (Auth::user()->hasAnyRole('Sales')) {
+            if ($user_id != Auth::user()->id) {
+                abort(404);
+            }
         }
     }
 

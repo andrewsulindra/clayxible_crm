@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Owner;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -27,6 +28,10 @@ class HomeController extends Controller
     {
         $project_count = Project::where('is_active', '1')->count();
         $owner_count = Owner::where('is_active', '1')->count();
+        if (Auth::user()->hasAnyRole('Sales')) {
+            $project_count = Project::where('sales_id', Auth::user()->id)->where('is_active', '1')->count();
+            $owner_count = Owner::where('created_by', Auth::user()->id)->where('is_active', '1')->count();
+        }
 
         $data = [
             'title' => 'Dashboard',

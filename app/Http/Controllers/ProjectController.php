@@ -7,6 +7,8 @@ use App\Models\Project;
 use App\Models\Owner;
 use App\Models\ProjectLog;
 use App\Models\User;
+use App\Models\ProjectCategory;
+use App\Models\OwnerCategory;
 use Illuminate\Support\Facades\Validator;
 use DB;
 use Auth;
@@ -57,12 +59,17 @@ class ProjectController extends Controller
         ->where('cities.country_code','ID')
         ->get();
 
+        $project_category = ProjectCategory::where('is_active', '1')->get();
+        $owner_category = OwnerCategory::where('is_active', '1')->get();
+
         $data = [
             'title' => 'Create Project',
             'menu' => 'master',
             'sub_menu' => 'project',
-            'owners' => Owner::where('is_active', '1')->get(),
+            'owners' => Owner::getOwnerList(),
             'cities' => $cities,
+            'project_category' => $project_category,
+            'owner_category' => $owner_category
         ];
         return view('project.form', $data);
     }
@@ -97,6 +104,7 @@ class ProjectController extends Controller
                 $form_data_owner['city'] = $form_data['owner_city'];
                 $form_data_owner['phone'] = $form_data['owner_phone'];
                 $form_data_owner['email'] = $form_data['owner_email'];
+                $form_data_owner['owner_category_id'] = $form_data['owner_category_id'];
                 $data = Owner::create($form_data_owner);
 
                 $form_data['owner_id'] = $data->id;
@@ -125,6 +133,7 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::where('id', $id)->where('is_active', '1')->first();
+        Project::checkProjectBelongsToUser($project->sales_id);
         $owner = Owner::where('id', $project->owner_id)->where('is_active', '1')->first();
         $cities = DB::table('cities')
             ->select(DB::raw('cities.id as city_id'), DB::raw('cities.name as city_name'), DB::raw('states.name as state_name'), DB::raw('countries.name as country_name'))
@@ -156,6 +165,9 @@ class ProjectController extends Controller
 
         $project_log = ProjectLog::where('project_id', $id)->whereNotIn('type', [config('constants.PROJECT_LOG_TYPE_UPDATE')])->orderBy('created_at', 'DESC')->get();
 
+        $project_category = ProjectCategory::where('id', $project->project_category_id)->first();
+        $owner_category = OwnerCategory::where('id', $owner->owner_category_id)->first();
+
         $data = [
             'title' => '',
             'menu' => 'master',
@@ -165,7 +177,9 @@ class ProjectController extends Controller
             'cities' => $cities,
             'cities_owner' => $cities_owner,
             'project_status' => $project_status,
-            'project_log' => $project_log
+            'project_log' => $project_log,
+            'project_category' => $project_category,
+            'owner_category' => $owner_category
         ];
         return view('project.detail', $data);
     }
@@ -184,14 +198,19 @@ class ProjectController extends Controller
         ->where('cities.country_code','ID')
         ->get();
 
+        $project = Project::findOrFail($id);
+        Project::checkProjectBelongsToUser($project->sales_id);
+        $project_category = ProjectCategory::where('is_active', '1')->get();
+
         $data = [
             'title' => 'Edit Project',
             'menu' => 'master',
             'sub_menu' => 'project',
-            'models' => Project::findOrFail($id),
-            'owners' => Owner::where('is_active', '1')->all(),
+            'models' => $project,
+            'owners' => Owner::getOwnerList(),
             'cities' => $cities,
-            'users' => User::where('is_active', '1')->all()
+            'users' => User::where('is_active', '1')->get(),
+            'project_category' => $project_category
         ];
         return view('project.form', $data);
     }
@@ -205,8 +224,11 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
+        Project::checkProjectBelongsToUser($project->sales_id);
+
         $validator = Validator::make($request->all(), [
             'name'  => 'required',
+            'owner_id'  => 'required',
         ]);
         if ($validator->fails()) {
             return redirect()->back()->with('error', $validator->errors())->withInput();

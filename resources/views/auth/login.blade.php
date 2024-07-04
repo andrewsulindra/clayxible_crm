@@ -21,7 +21,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <b>Multi</b>master
+    Clayxible
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -39,7 +39,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input id="password" name="password" type="password" class="form-control" placeholder="Password" required autocomplete="current-password">                            
+          <input id="password" name="password" type="password" class="form-control" placeholder="Password" required autocomplete="current-password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -49,7 +49,7 @@
         <div class="row">
         @if (session('error'))
         <p class="text-danger">{{ session('error') }}</p>
-        @endif                           
+        @endif
         </div>
         <div class="row">
           <div class="col-8">

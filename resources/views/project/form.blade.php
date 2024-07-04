@@ -46,6 +46,20 @@
             <div class="card card-primary">
               <!-- /.card-header -->
                 <div class="card-body">
+
+                  <div class="form-group">
+                    <label>Project Category</label>
+                    <select class="form-control" style="width: 100%;" id="project_category_id" name="project_category_id" required>
+                      @if (!empty($project_category))
+                      @foreach ($project_category as $pc)
+                        <option value="{{ $pc->id }}" {{ isset($models) && $models->project_category_id == $pc->id ? 'selected' : '' }}>{{ $pc->name }}</option>
+                      @endforeach
+                      @endif
+                    </select>
+                  </div>
+
+
+
                   <div class="form-group">
                     <label>Name</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" value="{{ $models->name ?? old('name') }}" required autocomplete="name">
@@ -144,6 +158,16 @@
                   <div class="tab-content" id="custom-tabs-four-tabContent">
                     <div class="tab-pane fade show active" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                       <div class="form-group">
+                        <label>Owner Category</label>
+                        <select class="form-control" style="width: 100%;" id="owner_category_id" name="owner_category_id">
+                          @if (!empty($owner_category))
+                          @foreach ($owner_category as $oc)
+                            <option value="{{ $oc->id }}">{{ $oc->name }}</option>
+                          @endforeach
+                          @endif
+                        </select>
+                      </div>
+                      <div class="form-group">
                         <label>Name</label>
                         <input type="text" class="form-control" id="owner_name" name="owner_name" placeholder="Enter name" value="{{ $models->name ?? old('name') }}"  autocomplete="name">
                       </div>
@@ -213,6 +237,7 @@
                 <div class="form-group">
                   <label>Owner</label>
                   <select class="form-control select2 select2-owner" style="width: 100%;" id="owner_id" name="owner_id">
+                    <option value="" selected="selected"></option>
                     @if (!empty($owners))
                     @foreach ($owners as $owner)
                       <option value="{{ $owner->id }}" {{ isset($models) && $models->owner_id == $owner->id ? 'selected' : '' }}>{{ $owner->name }}|{{ $owner->address1 }}|{{ $owner->phone }}</option>

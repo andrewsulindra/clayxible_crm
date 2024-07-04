@@ -57,15 +57,19 @@
                         <i class="fas fa-pencil-alt"></i>
                         Edit
                     </a>
+                    @if (Auth::user()->hasAnyPermission(['Activate/deactivate owner']))
                     <a class="btn btn-danger btn-sm" href="{{ url('owner/' . $data->id) . '/deactivate'}}" onclick="return confirm('Are you sure want to deactivate this data?')">
                       <i class="far fa-times-circle"></i>
                         Deactivate
                     </a>
+                    @endif
                     @elseif(!empty($data->is_active == '0'))
+                    @if (Auth::user()->hasAnyPermission(['Activate/deactivate owner']))
                     <a class="btn btn-secondary btn-sm" href="{{ url('owner/' . $data->id) . '/reactivate'}}" onclick="return confirm('Are you sure want to reactivate this data?')">
                       <i class="fas fa-redo"></i>
                         Reactivate
                     </a>
+                    @endif
                     @endif
                   </td>
                 </tr>

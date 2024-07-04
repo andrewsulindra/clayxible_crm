@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Laravel\Passport\HasApiTokens;
+use Auth;
 
 class Project extends BaseModel
 {
@@ -65,5 +66,13 @@ class Project extends BaseModel
     public function Sales()
     {
         return $this->belongsTo(User::class, 'sales_id', 'id');
+    }
+
+    public static function checkProjectBelongsToUser($user_id) {
+        if (Auth::user()->hasAnyRole('Sales')) {
+            if ($user_id != Auth::user()->id) {
+                abort(404);
+            }
+        }
     }
 }

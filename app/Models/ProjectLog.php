@@ -64,13 +64,13 @@ class ProjectLog extends BaseModel
 
     public function getCreatedByNameAttribute()
     {
-        $user = User::where('email', $this->attributes['created_by'])->first();
+        $user = User::where('id', $this->attributes['created_by'])->first();
         return $user->name;
     }
 
     public function getCreatedByImageAttribute()
     {
-        $user = User::where('email', $this->attributes['created_by'])->first();
+        $user = User::where('id', $this->attributes['created_by'])->first();
         return $user->image;
     }
 

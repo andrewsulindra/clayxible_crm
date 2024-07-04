@@ -16,6 +16,8 @@ if (!function_exists('projectStatus')) {
                 return 'Open';
             case config('constants.PROJECT_STATUS_CONFIRM'):
                 return 'Confirm';
+            case config('constants.PROJECT_STATUS_FOLLOW_UP'):
+                return 'Follow Up';
             case config('constants.PROJECT_STATUS_NEED_FOLLOW_UP'):
                 return 'Need Follow Up';
             case config('constants.PROJECT_STATUS_CLOSE_PAID'):

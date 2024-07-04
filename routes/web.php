@@ -16,6 +16,8 @@ Route::get('/', 'Auth\LoginController@showLogin');
 Route::get('login', 'Auth\LoginController@showLogin')->name('login');
 Route::post('login', 'Auth\LoginController@doLogin')->name('login');
 
+Route::get('send-email', 'MailController@sendEmail');
+
 Route::group(['middleware' => ['auth:web']], function () {
     //AUTH
     Route::post('logout', 'Auth\LoginController@doLogout');

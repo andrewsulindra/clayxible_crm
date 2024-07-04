@@ -10,12 +10,12 @@ class BaseModel extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->created_by = Auth::check() ? Auth::user()->email : 'System';
-            $model->updated_by = Auth::check() ? Auth::user()->email : 'System';
+            $model->created_by = Auth::check() ? Auth::user()->id : '1';
+            $model->updated_by = Auth::check() ? Auth::user()->id : '1';
         });
 
         static::updating(function ($model) {
-            $model->updated_by = Auth::check() ? Auth::user()->email : 'System';
+            $model->updated_by = Auth::check() ? Auth::user()->id : '1';
         });
     }
 }

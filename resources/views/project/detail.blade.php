@@ -24,6 +24,7 @@
           </div>
         </div>
         <div class="card-body">
+          @if (Auth::user()->hasAnyRole(['Super Admin', 'Manager']))
           <div class="row">
             <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
               <div class="btn-group">
@@ -34,18 +35,27 @@
                 <div class="dropdown-menu" role="menu">
                   <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/1') }}">Open</a>
                   <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/2') }}">Confirm</a>
-                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/3') }}">Need Follow Up</a>
-                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/4') }}">Close Paid</a>
+                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/3') }}">Follow Up</a>
+                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/4') }}">Need Follow Up</a>
+                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/5') }}">Close Paid</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/5') }}">Close Unpaid</a>
+                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/6') }}">Close Unpaid</a>
                 </div>
               </div>
             </div>
           </div>
+          @else
+          <div class="row">
+            <h6 class="col-12 col-md-12 col-lg-4 order-1 order-md-2">Status: {{ $project_status }}</h6>
+          </div>
+          @endif
           <br><br>
           <div class="row">
             <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
               <h3 class="text-primary"></i> {{ $projects->name }}</h3>
+              <p class="text-muted">
+                Category: {{ $project_category->name }}
+              </p>
               <p class="text-muted">
                 {{ $projects->address1 }}
                 <br>
@@ -59,6 +69,8 @@
                     Owner Detail
                     <br>
                     <b>{{ $owners->name }}</b>
+                    <br>
+                    Category: {{ $owner_category->name }}
                     <br>
                     {{ $owners->address1 }}
                     <br>
@@ -144,7 +156,7 @@
                       <span class="username">
                         <a href="#">{{ $data_log->created_by_name }}</a>
                       </span>
-                      <span class="description">{{ $data_log->created_at->format('d F Y - H:i') }}</span>
+                      <span class="description">{{ $data_log->created_at->format('d F Y - H:i:s') }}</span>
                     </div>
                     @if ($data_log->type == config('constants.PROJECT_LOG_TYPE_ADD_PROGRESS'))
                       <p>

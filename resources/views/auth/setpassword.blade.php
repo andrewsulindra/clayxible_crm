@@ -21,7 +21,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../index2.html"><b>Admin</b>LTE</a>
+    <a href="../../index2.html">Set Password</a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -51,7 +51,7 @@
             @foreach ($errors->all() as $error)
               <p class="text-danger">{{$error}}</p>
             @endforeach
-          @endif                       
+          @endif
         </div>
         <div class="row">
           <div class="col-12">
