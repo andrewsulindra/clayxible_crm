@@ -31,10 +31,27 @@ class ProjectController extends Controller
      */
     public function index()
     {
+        // DB::enableQueryLog();
+
         $project = Project::where('is_active', '1')->orderBy('created_at', 'desc')->with(['sales'])->get();
         if (Auth::user()->hasAnyRole('Sales')) {
-            $project = Project::where('sales_id', Auth::user()->id)->where('is_active', '1')->orderBy('created_at', 'desc')->with(['sales'])->get();
+            $project = Project::
+                where('sales_id', Auth::user()->id)
+                ->where('group_id', Auth::user()->group_id)
+                ->where('is_active', '1')
+                ->orderBy('created_at', 'desc')
+                ->with(['sales'])
+                ->get();
+        } else if (Auth::user()->hasAnyRole('Manager')){
+            $project = Project::
+                where('group_id', Auth::user()->group_id)
+                ->where('is_active', '1')
+                ->orderBy('created_at', 'desc')
+                ->with(['sales'])
+                ->get();
         }
+
+        // dd(DB::getQueryLog());
 
         $data = [
             'title' => 'Manage Project',
@@ -105,12 +122,14 @@ class ProjectController extends Controller
                 $form_data_owner['phone'] = $form_data['owner_phone'];
                 $form_data_owner['email'] = $form_data['owner_email'];
                 $form_data_owner['owner_category_id'] = $form_data['owner_category_id'];
+                $form_data_owner['group_id'] = Auth()->user()->group_id;
                 $data = Owner::create($form_data_owner);
 
                 $form_data['owner_id'] = $data->id;
             }
 
             $form_data['sales_id'] = Auth()->user()->id;
+            $form_data['group_id'] = Auth()->user()->group_id;
             $data = Project::create($form_data);
 
             ProjectLog::createLog(
@@ -133,7 +152,7 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::where('id', $id)->where('is_active', '1')->first();
-        Project::checkProjectBelongsToUser($project->sales_id);
+        Project::checkProjectBelongsToUser($project->sales_id, $project->group_id);
         $owner = Owner::where('id', $project->owner_id)->where('is_active', '1')->first();
         $cities = DB::table('cities')
             ->select(DB::raw('cities.id as city_id'), DB::raw('cities.name as city_name'), DB::raw('states.name as state_name'), DB::raw('countries.name as country_name'))
@@ -199,7 +218,7 @@ class ProjectController extends Controller
         ->get();
 
         $project = Project::findOrFail($id);
-        Project::checkProjectBelongsToUser($project->sales_id);
+        Project::checkProjectBelongsToUser($project->sales_id, $project->group_id);
         $project_category = ProjectCategory::where('is_active', '1')->get();
 
         $data = [
@@ -224,7 +243,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        Project::checkProjectBelongsToUser($project->sales_id);
+        Project::checkProjectBelongsToUser($project->sales_id, $project->group_id);
 
         $validator = Validator::make($request->all(), [
             'name'  => 'required',

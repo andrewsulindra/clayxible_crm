@@ -8,7 +8,7 @@
     .select2-results__option {
       white-space: normal;
     }
-    #notes {
+    #notes, #specifications {
       height: 225px;
     }
   </style>
@@ -93,6 +93,10 @@
                   <div class="form-group">
                     <label>Email</label>
                     <input type="text" class="form-control" id="email" name="email" placeholder="Enter email" value="{{ $models->email ?? old('email') }}" required autocomplete="email">
+                  </div>
+                  <div class="form-group">
+                    <label>Specifications</label>
+                    <textarea placeholder="(Tolong diisi dengan spesifikasi produk yang dibutuhkan dengan lengkap dan jelas)" class="form-control" id="specifications" name="specifications" required autocomplete="notes">{{ $models->specifications ?? old('specifications') }}</textarea>
                   </div>
                   <div class="form-group">
                     <label>Notes</label>

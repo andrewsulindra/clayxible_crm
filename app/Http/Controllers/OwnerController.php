@@ -82,6 +82,7 @@ class OwnerController extends Controller
             return redirect()->back()->with('error', $validator->errors())->withInput();
         }else{
             $form_data = $request->all();
+            $form_data['group_id'] = Auth::user()->group_id;
             $data = Owner::create($form_data);
             return redirect()->back()->with('success', 'Successfully save data.');
         }
@@ -113,7 +114,7 @@ class OwnerController extends Controller
         ->get();
 
         $owner = Owner::findOrFail($id);
-        Owner::checkOwnerBelongsToUser($owner->created_by);
+        Owner::checkOwnerBelongsToUser($owner->created_by, $owner->group_id);
 
         $owner_category = OwnerCategory::where('is_active', '1')->get();
 

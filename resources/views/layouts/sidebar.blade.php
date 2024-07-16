@@ -41,7 +41,7 @@
               </a>
             </li>
           @endif
-          @if (Auth::user()->hasAnyRole(['Super Admin', 'Manager']))
+          @if (Auth::user()->hasAnyRole(['Super Admin']))
           <li class="nav-header">SYSTEM</li>
           <li class="nav-item has-treeview {!! $menu == 'users' ? 'menu-open' : '' !!}">
             <a href="#" class="nav-link {!! $menu == 'users' ? 'active' : '' !!}">

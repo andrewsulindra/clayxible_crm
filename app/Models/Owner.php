@@ -28,6 +28,7 @@ class Owner extends BaseModel
         'phone',
         'mobile_phone',
         'notes',
+        'group_id',
         'is_active',
         'owner_category_id',
         'created_by',
@@ -74,16 +75,25 @@ class Owner extends BaseModel
 
         if (Auth::user()->hasAnyRole('Sales')) {
             $query = self::where('created_by', Auth::user()->id)
+                        ->where('group_id', Auth::user()->group_id)
                          ->where('is_active', '1')
                          ->orderBy('name', 'asc');
+        } else if (Auth::user()->hasAnyRole('Manager')){
+            $query = self::where('group_id', Auth::user()->group_id)
+                        ->where('is_active', '1')
+                        ->orderBy('name', 'asc');
         }
 
         return $query->get();
     }
 
-    public static function checkOwnerBelongsToUser($user_id) {
+    public static function checkOwnerBelongsToUser($user_id, $group_id) {
         if (Auth::user()->hasAnyRole('Sales')) {
-            if ($user_id != Auth::user()->id) {
+            if ($user_id != Auth::user()->id || $group_id != Auth::user()->group_id) {
+                abort(404);
+            }
+        } else if (Auth::user()->hasAnyRole('Manager')){
+            if ($group_id != Auth::user()->group_id) {
                 abort(404);
             }
         }

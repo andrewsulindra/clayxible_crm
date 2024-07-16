@@ -28,6 +28,16 @@
                     <label>Email address</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" value="{{ $models->email ?? old('email') }}" autocomplete="email">
                   </div>
+                  <div class="form-group">
+                    <label>Group</label>
+                    <select class="form-control" style="width: 100%;" id="group_id" name="group_id" required>
+                      @if (!empty($groups))
+                      @foreach ($groups as $g)
+                        <option value="{{ $g->id }}" {{ isset($models) && $models->group_id == $g->id ? 'selected' : '' }}>{{ $g->name }}</option>
+                      @endforeach
+                      @endif
+                    </select>
+                  </div>
                   <!--
                   @if (empty($models->id))
                   <div class="form-group">

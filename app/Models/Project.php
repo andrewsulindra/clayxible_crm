@@ -28,8 +28,10 @@ class Project extends BaseModel
         'mobile_phone',
         'owner_id',
         'sales_id',
+        'specifications',
         'notes',
         'project_status',
+        'group_id',
         'is_active',
         'project_category_id',
         'created_by',
@@ -68,9 +70,13 @@ class Project extends BaseModel
         return $this->belongsTo(User::class, 'sales_id', 'id');
     }
 
-    public static function checkProjectBelongsToUser($user_id) {
+    public static function checkProjectBelongsToUser($user_id, $group_id) {
         if (Auth::user()->hasAnyRole('Sales')) {
-            if ($user_id != Auth::user()->id) {
+            if ($user_id != Auth::user()->id || $group_id != Auth::user()->group_id) {
+                abort(404);
+            }
+        } else if (Auth::user()->hasAnyRole('Manager')) {
+            if ($group_id != Auth::user()->group_id) {
                 abort(404);
             }
         }

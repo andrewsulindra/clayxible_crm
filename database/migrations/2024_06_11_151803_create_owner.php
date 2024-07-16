@@ -28,7 +28,8 @@ class CreateOwner extends Migration
             $table->string('mobile_phone')->nullable();
 
             $table->text('notes')->nullable();
-
+            
+            $table->bigInteger('group_id');
             $table->tinyInteger('is_active')->default(1)->comment('0: no, 1: yes');
 
             $table->integer('owner_category_id')->unsigned()->nullable();

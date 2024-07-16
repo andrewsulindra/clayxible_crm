@@ -10,6 +10,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Validation\Rule;
 use DB;
 use Auth;
+use App\Models\Group;
 
 class UsersController extends Controller
 {
@@ -53,7 +54,8 @@ class UsersController extends Controller
             'title' => 'Create User',
             'menu' => 'users',
             'sub_menu' => 'user',
-            'roles' => Role::get()
+            'roles' => Role::get(),
+            'groups' => Group::get(),
         ];
         return view('users.form', $data);
     }
@@ -70,7 +72,8 @@ class UsersController extends Controller
             'name'  => 'required|max:30',
             'email' => 'required|max:100|email|unique:users',
             //'password' => 'required|string|min:8|confirmed',
-            'roles' => 'required'
+            'roles' => 'required',
+            'group_id' => 'required'
         ]);
         if ($validator->fails()) {
             return redirect()->back()->with('error', $validator->errors())->withInput();
@@ -80,6 +83,7 @@ class UsersController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make('password'),
                 'image' => generateUserImage($request->name),
+                'group_id' => $request->group_id
             ]);
             $data->assignRole($request->input('roles'));
             return redirect()->back()->with('success', 'Successfully save data.');
@@ -107,6 +111,7 @@ class UsersController extends Controller
     {
         $user = User::find($id);
         $roles = Role::get();
+        $groups = Group::get();
         //$userRole = $user->roles->pluck('name','name')->all();
         $userRole = DB::table("model_has_roles")->where("model_has_roles.model_id",$id)
                     ->pluck('model_has_roles.role_id','model_has_roles.role_id')
@@ -118,6 +123,7 @@ class UsersController extends Controller
             'sub_menu' => 'user',
             'models' => $user,
             'roles' => $roles,
+            'groups' => $groups,
             'userRole' => $userRole
         ];
         return view('users.form', $data);

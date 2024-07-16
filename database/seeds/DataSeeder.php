@@ -5,6 +5,7 @@ use App\Models\Project;
 use App\Models\Owner;
 use App\Models\ProjectCategory;
 use App\Models\OwnerCategory;
+use App\Models\Group;
 
 class DataSeeder extends Seeder
 {
@@ -15,11 +16,22 @@ class DataSeeder extends Seeder
      */
     public function run()
     {
-        ProjectCategory::firstOrCreate(['name' => 'Apartment']);
         ProjectCategory::firstOrCreate(['name' => 'Rumah Tinggal']);
+        ProjectCategory::firstOrCreate(['name' => 'Resto']);
+        ProjectCategory::firstOrCreate(['name' => 'Hotel dan Resort']);
+        ProjectCategory::firstOrCreate(['name' => 'Gedung Swasta']);
+        ProjectCategory::firstOrCreate(['name' => 'Gedung Pemerintah']);
 
+        OwnerCategory::firstOrCreate(['name' => 'Owner']);
         OwnerCategory::firstOrCreate(['name' => 'Arsitek']);
-        OwnerCategory::firstOrCreate(['name' => 'Interior Design']);
+        OwnerCategory::firstOrCreate(['name' => 'Design Interior']);
+        OwnerCategory::firstOrCreate(['name' => 'Kontraktor']);
+        OwnerCategory::firstOrCreate(['name' => 'MK']);
+
+
+        Group::firstOrCreate(['name' => 'Principal']);
+        // Group::firstOrCreate(['name' => 'Agent A']);
+        // Group::firstOrCreate(['name' => 'Agent B']);
 
     }
 }

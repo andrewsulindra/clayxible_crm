@@ -24,7 +24,7 @@
           </div>
         </div>
         <div class="card-body">
-          @if (Auth::user()->hasAnyRole(['Super Admin', 'Manager']))
+          @if (Auth::user()->hasAnyRole(['Super Admin']))
           <div class="row">
             <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
               <div class="btn-group">
@@ -37,9 +37,9 @@
                   <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/2') }}">Confirm</a>
                   <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/3') }}">Follow Up</a>
                   <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/4') }}">Need Follow Up</a>
-                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/5') }}">Close Paid</a>
+                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/5') }}">Cut</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/6') }}">Close Unpaid</a>
+                  <a class="dropdown-item" href="{{ url('project/' . $projects->id . '/change_status/6') }}">Closed</a>
                 </div>
               </div>
             </div>
@@ -94,8 +94,7 @@
 
 
 
-
-
+      @if ($project_status !== 'Open')
       <!-- Default box -->
       <div class="card collapsed-card">
         <div class="card-header">
@@ -122,9 +121,7 @@
         <!-- /.card-body -->
       </div>
       <!-- /.card -->
-
-
-
+      @endif
 
 
 

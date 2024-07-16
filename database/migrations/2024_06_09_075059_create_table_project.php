@@ -30,9 +30,11 @@ class CreateTableProject extends Migration
             $table->bigInteger('owner_id');
             $table->bigInteger('sales_id');
 
+            $table->text('specifications')->nullable();
             $table->text('notes')->nullable();
             $table->integer('project_status')->default(1);
 
+            $table->bigInteger('group_id');
             $table->tinyInteger('is_active')->default(1)->comment('0: no, 1: yes');
 
             $table->integer('project_category_id')->unsigned()->nullable();

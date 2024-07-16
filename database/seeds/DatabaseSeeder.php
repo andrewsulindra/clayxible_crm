@@ -16,6 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersTableSeeder::class);
         $this->call(ImportSqlSeeder::class);
         $this->call(DataSeeder::class);
-        $this->call(FakerSeeder::class);
+        // $this->call(FakerSeeder::class);
     }
 }
