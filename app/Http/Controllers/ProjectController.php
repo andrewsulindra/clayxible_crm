@@ -152,6 +152,11 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::where('id', $id)->where('is_active', '1')->first();
+
+        if ($project == NULL) {
+            abort(404);
+        }
+
         Project::checkProjectBelongsToUser($project->sales_id, $project->group_id);
         $owner = Owner::where('id', $project->owner_id)->where('is_active', '1')->first();
         $cities = DB::table('cities')

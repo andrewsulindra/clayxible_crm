@@ -19,4 +19,8 @@ class Group extends BaseModel
     protected $fillable = [
         'name'
     ];
+
+    public function Project() {
+        return $this->hasMany(Project::class, 'group_id', 'id');
+    }
 }
