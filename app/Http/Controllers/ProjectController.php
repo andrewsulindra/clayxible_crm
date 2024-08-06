@@ -226,6 +226,11 @@ class ProjectController extends Controller
         Project::checkProjectBelongsToUser($project->sales_id, $project->group_id);
         $project_category = ProjectCategory::where('is_active', '1')->get();
 
+        $user = User::where('is_active', '1')->get();
+        if (Auth::user()->hasAnyRole('Manager')) {
+            $user = User::where('is_active', '1')->where('group_id', $project->group_id)->get();
+        }
+
         $data = [
             'title' => 'Edit Project',
             'menu' => 'master',
@@ -233,7 +238,7 @@ class ProjectController extends Controller
             'models' => $project,
             'owners' => Owner::getOwnerList(),
             'cities' => $cities,
-            'users' => User::where('is_active', '1')->get(),
+            'users' => $user,
             'project_category' => $project_category
         ];
         return view('project.form', $data);
