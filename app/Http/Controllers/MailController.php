@@ -10,12 +10,14 @@ class MailController extends Controller
 {
     public function sendEmail()
     {
-        $details = [
+        $data = [
             'title' => 'Mail from Laravel 6',
             'body' => 'This is a test email.'
         ];
 
-        Mail::to('andrew.sulindra@gmail.com')->send(new weeksEmail());
+        $recipients = ['andrew.sulindra@gmail.com', 'blizzard_endru@yahoo.com'];
+
+        Mail::to($recipients)->send(new weeksEmail($data));
 
         return 'Email sent!';
     }

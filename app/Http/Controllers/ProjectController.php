@@ -12,6 +12,8 @@ use App\Models\OwnerCategory;
 use Illuminate\Support\Facades\Validator;
 use DB;
 use Auth;
+use App\Mail\sendEmail;
+use Illuminate\Support\Facades\Mail;
 
 class ProjectController extends Controller
 {
@@ -138,6 +140,17 @@ class ProjectController extends Controller
                 NULL,
                 'Project Created'
             );
+
+            //send email start
+            $data = [
+                'view' => 'emails.new_project',
+                'subject' => '[Clayxible] New Project Added',
+                'project_name' => $form_data['name']
+            ];
+            $recipients = config('constants.PRINCIPAL_EMAILS');
+            $bcc_recipients = config('constants.DEV_EMAILS');
+            Mail::to($recipients)->bcc($bcc_recipients)->send(new sendEmail($data));
+            //send email end
 
             return redirect()->back()->with('success', 'Successfully save data.');
         }
@@ -328,12 +341,95 @@ class ProjectController extends Controller
 
     public function change_status(Project $project, $status)
     {
+        $record_status_open = ProjectLog::where('project_id', $project->id)->where('type', config('constants.PROJECT_LOG_TYPE_CREATE'))->first();
+        if ($record_status_open && $status == config('constants.PROJECT_STATUS_OPEN')) {
+            return redirect()->back()->with('error', 'Project already open.');
+        }
+        $record_status_cut = ProjectLog::where('project_id', $project->id)->where('type', config('constants.PROJECT_LOG_TYPE_CHANGE_STATUS'))->where('new', config('constants.PROJECT_STATUS_CUT'))->first();
+        if ($record_status_cut) {
+            return redirect()->back()->with('error', 'Project already cut.');
+        }
+        $record_status_closed = ProjectLog::where('project_id', $project->id)->where('type', config('constants.PROJECT_LOG_TYPE_CHANGE_STATUS'))->where('new', config('constants.PROJECT_STATUS_CLOSED'))->first();
+        if ($record_status_closed) {
+            return redirect()->back()->with('error', 'Project already closed.');
+        }
+        $record_status_confirm = ProjectLog::where('project_id', $project->id)->where('type', config('constants.PROJECT_LOG_TYPE_CHANGE_STATUS'))->where('new', config('constants.PROJECT_STATUS_CONFIRM'))->first();
+
         ProjectLog::createLog(
             $project->id,
             config('constants.PROJECT_LOG_TYPE_CHANGE_STATUS'),
             $project->project_status,
             $status
         );
+
+        //send email start
+        if ($status == config('constants.PROJECT_STATUS_CONFIRM') && $record_status_confirm == null) {
+            $data = [
+                'view' => 'emails.confirm_project',
+                'subject' => '[Clayxible] Project Confirmed - '.$project->name,
+                'project_name' => $project->name
+            ];
+            $recipients = $project->sales->email;
+            $email_managers = User::where('group_id', $project->group_id)->where('is_active', 1)->whereHas('roles', function($query) {
+                $query->where('name', 'Manager');
+            })->pluck('email')->toArray();
+            $cc_recipients = $email_managers;
+            $bcc_recipients = array_merge(config('constants.PRINCIPAL_EMAILS'), config('constants.DEV_EMAILS'));
+            Mail::to($recipients)->cc($cc_recipients)->bcc($bcc_recipients)->send(new sendEmail($data));
+        } else if ($status == config('constants.PROJECT_STATUS_FOLLOW_UP') || $status == config('constants.PROJECT_STATUS_NEED_FOLLOW_UP')) {
+            $last_detail_submitted = ProjectLog::where('type', config('constants.PROJECT_LOG_TYPE_ADD_PROGRESS'))
+                ->where('project_id', $project->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            if ($last_detail_submitted != null) {
+                $last_detail_submitted = $last_detail_submitted->created_at;
+            } else {
+                $last_detail_submitted = NULL;
+            }
+
+            $data = [
+                'view' => 'emails.follow_up_project',
+                'subject' => '[Clayxible] Project '.($status == config('constants.PROJECT_STATUS_NEED_FOLLOW_UP') ? 'Need ' : '').'Follow Up - '.$project->name,
+                'project_name' => $project->name,
+                'last_date_detail_submitted' => $last_detail_submitted
+            ];
+
+            $recipients = $project->sales->email;
+            $email_managers = User::where('group_id', $project->group_id)->where('is_active', 1)->whereHas('roles', function($query) {
+                $query->where('name', 'Manager');
+            })->pluck('email')->toArray();
+            $cc_recipients = $email_managers;
+            $bcc_recipients = array_merge(config('constants.PRINCIPAL_EMAILS'), config('constants.DEV_EMAILS'));
+            Mail::to($recipients)->cc($cc_recipients)->bcc($bcc_recipients)->send(new sendEmail($data));
+        } else if ($status == config('constants.PROJECT_STATUS_CUT')) {
+            $data = [
+                'view' => 'emails.cut_project',
+                'subject' => '[Clayxible] Project Has Been Cut -' . $project->name,
+                'project_name' => $project->name
+            ];
+            $recipients = $project->sales->email;
+            $email_managers = User::where('group_id', $project->group_id)->where('is_active', 1)->whereHas('roles', function($query) {
+                $query->where('name', 'Manager');
+            })->pluck('email')->toArray();
+            $cc_recipients = $email_managers;
+            $bcc_recipients = array_merge(config('constants.PRINCIPAL_EMAILS'), config('constants.DEV_EMAILS'));
+            Mail::to($recipients)->cc($cc_recipients)->bcc($bcc_recipients)->send(new sendEmail($data));
+        } else if ($status == config('constants.PROJECT_STATUS_CLOSED')) {
+            $data = [
+                'view' => 'emails.closed_project',
+                'subject' => '[Clayxible] Project Closed -' . $project->name,
+                'project_name' => $project->name
+            ];
+            $recipients = $project->sales->email;
+            $email_managers = User::where('group_id', $project->group_id)->where('is_active', 1)->whereHas('roles', function($query) {
+                $query->where('name', 'Manager');
+            })->pluck('email')->toArray();
+            $cc_recipients = $email_managers;
+            $bcc_recipients = array_merge(config('constants.PRINCIPAL_EMAILS'), config('constants.DEV_EMAILS'));
+            Mail::to($recipients)->cc($cc_recipients)->bcc($bcc_recipients)->send(new sendEmail($data));
+        }
+
+        //send email end
 
         $project->change_status($status);
         return redirect()->back()->with('success', 'Status Changed');

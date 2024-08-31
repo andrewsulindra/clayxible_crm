@@ -12,5 +12,8 @@ return [
     'PROJECT_LOG_TYPE_UPDATE' => 2,
     'PROJECT_LOG_TYPE_CHANGE_SALES' => 3,
     'PROJECT_LOG_TYPE_CHANGE_STATUS' => 4,
-    'PROJECT_LOG_TYPE_ADD_PROGRESS' => 5
+    'PROJECT_LOG_TYPE_ADD_PROGRESS' => 5,
+
+    'PRINCIPAL_EMAILS' => ['rusmanhaveel@yahoo.com', 'rudy.clayxible@gmail.com'],
+    'DEV_EMAILS' => ['andrew.sulindra@gmail.com'],
 ];

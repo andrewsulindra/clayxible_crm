@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class weeksEmail extends Mailable
+class sendEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -29,6 +29,6 @@ class weeksEmail extends Mailable
     public function build()
     {
         return $this->from(config('mail.from.address'), config('mail.from.name'))
-        ->subject('Test Email')->view('emails.weeks')->with('data', $this->data); // Pass the data to the view
+        ->subject($this->data['subject'])->view($this->data['view'])->with('data', $this->data); // Pass the data to the view
     }
 }
