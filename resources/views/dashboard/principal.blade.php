@@ -68,6 +68,7 @@
                             <span class="float-right">
                                 {{ $ds['count'] }}
                             </span>
+                            <br>
                         @endforeach
                     </text>
                 @endif

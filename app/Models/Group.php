@@ -21,6 +21,6 @@ class Group extends BaseModel
     ];
 
     public function Project() {
-        return $this->hasMany(Project::class, 'group_id', 'id');
+        return $this->hasMany(Project::class, 'group_id', 'id')->where('is_active', 1);
     }
 }
