@@ -62,6 +62,11 @@
                 {{ $cities->city_name }}
                 <br>
                 {{ $cities->state_name }}, {{ $cities->country_name }}
+                <br>
+                <br>
+                Phone: {{ $projects->phone }}
+                <br>
+                Mobile Phone: {{ $projects->mobile_phone }}
               </p>
               <br>
               <div class="text-muted">
@@ -77,6 +82,11 @@
                     {{ $cities_owner->city_name }}
                     <br>
                     {{ $cities_owner->state_name }}, {{ $cities_owner->country_name }}
+                    <br>
+                    Phone: {{ $owners->phone }}
+                    <br>
+                    Mobile Phone: {{ $owners->mobile_phone }}
+                    <br>
 
                 </p>
               </div>
