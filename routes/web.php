@@ -18,6 +18,8 @@ Route::post('login', 'Auth\LoginController@doLogin')->name('login');
 
 Route::get('send-email', 'MailController@sendEmail');
 
+Route::get('check_project_activity', 'MailController@check_project_activity');
+
 Route::group(['middleware' => ['auth:web']], function () {
     //AUTH
     Route::post('logout', 'Auth\LoginController@doLogout');
