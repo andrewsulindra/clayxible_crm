@@ -31,6 +31,7 @@ class MailController extends Controller
 
     public function check_project_activity(Request $request)
     {
+        $this->SendMessageToDiscord("cron", "project_activity func started", '', "cron_log");
         $all_project = DB::table('project as p')
         ->select(
             'p.id',
@@ -117,18 +118,18 @@ class MailController extends Controller
             if ($two_month_notice->count() > 0) {
                 $this->SendMessageToDiscord("cron", "project_activity two month notice", $two_month_notice, "cron_log");
             }
-            
-            foreach ($one_month_notice as $key => $value) {
-                $project = Project::find($value->id);
-                $projectController = new ProjectController();
-                $result = $projectController->change_status($project, config('constants.PROJECT_STATUS_FOLLOW_UP'));
-            }
 
-            foreach ($two_month_notice as $key => $value) {
-                $project = Project::find($value->id);
-                $projectController = new ProjectController();
-                $result = $projectController->change_status($project, config('constants.PROJECT_STATUS_NEED_FOLLOW_UP'));
-            }
+            // foreach ($one_month_notice as $key => $value) {
+            //     $project = Project::find($value->id);
+            //     $projectController = new ProjectController();
+            //     $result = $projectController->change_status($project, config('constants.PROJECT_STATUS_FOLLOW_UP'));
+            // }
+
+            // foreach ($two_month_notice as $key => $value) {
+            //     $project = Project::find($value->id);
+            //     $projectController = new ProjectController();
+            //     $result = $projectController->change_status($project, config('constants.PROJECT_STATUS_NEED_FOLLOW_UP'));
+            // }
         }
 
 
