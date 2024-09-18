@@ -119,20 +119,18 @@ class MailController extends Controller
                 $this->SendMessageToDiscord("cron", "project_activity two month notice", $two_month_notice, "cron_log");
             }
 
-            // foreach ($one_month_notice as $key => $value) {
-            //     $project = Project::find($value->id);
-            //     $projectController = new ProjectController();
-            //     $result = $projectController->change_status($project, config('constants.PROJECT_STATUS_FOLLOW_UP'));
-            // }
+            foreach ($one_month_notice as $key => $value) {
+                $project = Project::find($value->id);
+                $projectController = new ProjectController();
+                $result = $projectController->change_status($project, config('constants.PROJECT_STATUS_FOLLOW_UP'));
+            }
 
-            // foreach ($two_month_notice as $key => $value) {
-            //     $project = Project::find($value->id);
-            //     $projectController = new ProjectController();
-            //     $result = $projectController->change_status($project, config('constants.PROJECT_STATUS_NEED_FOLLOW_UP'));
-            // }
+            foreach ($two_month_notice as $key => $value) {
+                $project = Project::find($value->id);
+                $projectController = new ProjectController();
+                $result = $projectController->change_status($project, config('constants.PROJECT_STATUS_NEED_FOLLOW_UP'));
+            }
         }
-
-
 
         return response()->json([
             'one_month_notice' => $one_month_notice,
