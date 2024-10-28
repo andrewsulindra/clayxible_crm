@@ -18,7 +18,7 @@
 <section class="content">
       <div class="container-fluid">
 
-      <form role="form" method="post" action="{{ url('project' . (!empty($models->id) ? '/' . $models->id : '')) }}" enctype="multipart/form-data">
+      <form role="form" method="post" action="{{ url('project' . (!empty($models->id) ? '/' . $models->id : '')) }}" enctype="multipart/form-data" onsubmit="disableSubmitButton(this)">
         @csrf
         @if (!empty($models->id))
           @method('put')
@@ -279,7 +279,7 @@
         <!-- /.row -->
 
           <div class="col-md-6">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" id="submitButton">
             @if (!empty($models->id))
               Update
             @else
@@ -386,4 +386,10 @@
       });
     });
   </script>
+<script>
+  function disableSubmitButton(form) {
+      // Disable the submit button
+      form.querySelector('#submitButton').disabled = true;
+  }
+</script>
 @stop
